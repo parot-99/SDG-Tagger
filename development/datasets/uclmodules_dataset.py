@@ -1,7 +1,7 @@
 from pandas import read_excel
 from numpy import int64
 
-def load_uclmodules_dataset(path, only_labled=True):
+def load_uclmodules_data(path, only_labled=True):
     data = read_excel(path, sheet_name='Data')
     data = data.drop([
         'Unnamed: 0', 'link', 'heading', 'updated',   'Faculty',

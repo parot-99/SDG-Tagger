@@ -2,7 +2,7 @@ from pandas import read_csv
 from json import loads
 from numpy import empty
 
-def load_videscription_dataset(path):
+def load_videscription_data(path):
     vid_data = read_csv(path)
     length = vid_data.shape[0]
     data = empty(length, dtype=object)
