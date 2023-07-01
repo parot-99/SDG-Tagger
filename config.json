@@ -1,0 +1,24 @@
+{
+    "development": {
+        "osdg_data_path": "./data/osdg_data.csv",
+        "uclmodules_data_path": "./data/ucl_modules_data.xlsx",
+        "videscription_data_path": "./data/video_description_data.csv",
+        "trainer_args": {
+            "device": "cuda",
+            "output_dir": "./development/training_output/Bert",
+            "overwrite_output_dir": false,
+            "num_train_epochs": 4,
+            "per_device_train_batch_size": 32,
+            "per_device_eval_batch_size": 32,
+            "warmup_steps": 500,
+            "weight_decay": 0.01,
+            "logging_dir": "./development/training_output/Bert/logs",
+            "logging_steps": 10,
+            "evaluation_strategy": "epoch"
+        }
+    },
+
+    "production": {
+    
+    }
+}

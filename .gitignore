@@ -1,0 +1,19 @@
+# Environemnet
+__pycache__/
+
+
+# Project Specific
+Assets/
+training_output/
+weights/
+production/
+production_main.ipynb
+practice.ipynb
+
+# datasets
+data/video_decription_data.csv
+data/ucl_modules_data.xlsx
+data/osdg_data_old.csv
+
+# models
+/models/GPT.py
