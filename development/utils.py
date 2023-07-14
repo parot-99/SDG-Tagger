@@ -1,24 +1,24 @@
 def parse_label(sdg_label):
-    if sdg_label < 1 or sdg_label > 16:
+    if sdg_label < 0 or sdg_label > 15:
         raise Exception('No such SDG\n')
 
     names = {
-        1: 'No Poverty',
-        2: 'Zero Hunger',
-        3: 'Good Health and Well-Being',
-        4: 'Quality Education',
-        5: 'Gender Equality',
-        6: 'Clean Water and Sanitation',
-        7: 'Affordable and Clean Energy',
-        8: 'Decent Work and Economic Growth',
-        9: 'Industry, Innovation, and Infrastructure',
-        10: 'Reduced Inequalities',
-        11: 'Sustainable Cites and Communities',
-        12: 'Responsible Consumption and Production',
-        13: 'Climate Action',
-        14: 'Life Below Water',
-        15: 'Life on Land',
-        16: 'Peace, Justice, and Strong Institutions'
+        0: 'No Poverty',
+        1: 'Zero Hunger',
+        2: 'Good Health and Well-Being',
+        3: 'Quality Education',
+        4: 'Gender Equality',
+        5: 'Clean Water and Sanitation',
+        6: 'Affordable and Clean Energy',
+        7: 'Decent Work and Economic Growth',
+        8: 'Industry, Innovation, and Infrastructure',
+        9: 'Reduced Inequalities',
+        10: 'Sustainable Cites and Communities',
+        11: 'Responsible Consumption and Production',
+        12: 'Climate Action',
+        13: 'Life Below Water',
+        14: 'Life on Land',
+        15: 'Peace, Justice, and Strong Institutions'
     }
 
     return names[sdg_label]

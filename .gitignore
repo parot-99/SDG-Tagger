@@ -4,11 +4,13 @@ __pycache__/
 
 # Project Specific
 Assets/
+dissertation_notes.txt
 development/training_output/
 development/weights/
 production/
 production_main.ipynb
 practice.ipynb
+training_log.csv
 
 # datasets
 data/video_decription_data.csv

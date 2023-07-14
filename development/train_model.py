@@ -30,29 +30,16 @@ def fine_tune_transformer(model, tokenizer, tokenizer_args, data, dev_config):
         data['valid'][1],
     )
 
-    trainer_args = dev_config['trainer_args']
-
-    training_args = TrainingArguments(
-        output_dir=trainer_args['output_dir'],
-        overwrite_output_dir=trainer_args['overwrite_output_dir'],
-        num_train_epochs=trainer_args['num_train_epochs'],
-        per_device_train_batch_size=trainer_args['per_device_train_batch_size'],
-        per_device_eval_batch_size=trainer_args['per_device_eval_batch_size'],
-        warmup_steps=trainer_args['warmup_steps'],
-        weight_decay=trainer_args['weight_decay'],
-        logging_dir=trainer_args['logging_dir'],
-        logging_steps=trainer_args['logging_steps'],
-        evaluation_strategy=trainer_args['evaluation_strategy']
-    )
-
+    trainer_args = TrainingArguments(**dev_config['training_args'])
     trainer = Trainer(
         model=model,
-        args=training_args,
+        args=trainer_args,
         train_dataset=train_dataset,
         eval_dataset=valid_dataset,
         compute_metrics=compute_accuracy
     )
 
     result = trainer.train()
+    trainer.save_model(output_dir=dev_config['training_args']['output_dir'])
 
     return result

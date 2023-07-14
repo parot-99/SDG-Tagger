@@ -13,20 +13,23 @@ class OsdgDataset(Dataset):
 
     def __getitem__(self, idx):
         sample = {
-            key: tensor(val[idx]) for key, val in self.__encodings.items()
+            key: val[idx].clone().detach() for key, val in self.__encodings.items()
         }
         sample['labels'] = tensor(self.__labels[idx])
 
         return sample
     
-def load_osdg_data(data_path, training=False):
+def load_osdg_data(data_path, training=False, filter_agreement=False):
     data = read_csv(data_path, delimiter=r'\t', engine='python')
     train_ratio = 0.70
     test_ratio = 0.15
     valid_ratio = 0.15
 
+    if filter_agreement:
+        data = data[data['agreement'] >= 0.6]
+
     if not training:
-        return data  
+        return data
 
     texts = data['text'].values
     sdgs = data['sdg'].values - 1

@@ -10,25 +10,16 @@ class ALBERT(TextClassificationModel):
             path, num_labels=16
         )
         self.__tokenizer  = AlbertTokenizerFast.from_pretrained(
-            path, do_lower_case=True
+            'albert-base-v2', do_lower_case=True
         )
         self.__tokenizer_args = {
-            'truncation': True,
+            'padding': 'max_length',
+            'max_length': 512,
+            'truncation': 'longest_first',
             'add_special_tokens': True, 
-            'max_length': 256,
-            'pad_to_max_length': True, 
             'return_attention_mask': True,
             'return_tensors': 'pt'
         }
 
-    @property
-    def model(self):
-        return self.__model
-    
-    @property
-    def tokenizer(self):
-        return self.__tokenizer
-    
-    @property
-    def tokenizer_args(self):
-        return self.__tokenizer_args
+        super().__init__(self.__model, self.__tokenizer, self.__tokenizer_args)
+        
