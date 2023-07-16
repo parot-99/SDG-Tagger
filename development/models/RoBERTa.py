@@ -1,4 +1,3 @@
-
 from transformers import RobertaForSequenceClassification
 from transformers import RobertaTokenizerFast
 from .TextClassificationModel import TextClassificationModel
