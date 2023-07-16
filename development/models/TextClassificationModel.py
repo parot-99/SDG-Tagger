@@ -32,18 +32,22 @@ class TextClassificationModel:
         return evaluation
 
     def predict(self, text):
-        pipe = TextClassificationPipeline(
-            model=self.__model,
-            tokenizer=self.__tokenizer,
-            top_k=None,
-            device=0,
-            max_length=512,
-            truncation=True
+        tokens = self.__tokenizer.encode_plus(
+            text,
+            **self.__tokenizer_args
         )
 
-        predictions = pipe(text)
+        input_dict = {
+            'input_ids': tokens['input_ids'].long(),
+            'attention_mask': tokens['attention_mask'].int()
+        }
 
-        return predictions
+        prediction = self.__model(**input_dict)
+        prediction = softmax(prediction[0], dim=-1)
+        prediction.mean(dim=0)
+        prediction = prediction.argmax().item()
+
+        return prediction
     
     def predict_long_text(self, text):
         window_size = 510
