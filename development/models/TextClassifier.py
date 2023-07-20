@@ -4,7 +4,7 @@ from sklearn.metrics import classification_report
 from torch import Tensor, cat, stack
 from torch.nn.functional import softmax
 
-class TextClassificationModel:
+class TextClassifier:
     def __init__(self, model, tokenizer, tokenizer_args):
         self.__model = model
         self.__tokenizer  = tokenizer
@@ -30,12 +30,47 @@ class TextClassificationModel:
         evaluation = classification_report(y_true, y_pred)
 
         return evaluation
+    
+    def evaluate_multilabel(self, data, add_one=False):
+        pipe = TextClassificationPipeline(
+            model=self.__model,
+            tokenizer=self.__tokenizer,
+            top_k=None,
+            device=0,
+            max_length=512,
+            truncation=True
+        )
 
+        y_true = data[1]
+        predictions = pipe(data[0].tolist())
+        y_pred = self.__parse_predictions(predictions)
+
+        if add_one:
+            y_pred += 1
+
+        data_length = len(y_true)
+        accuracy_list = []
+
+        for i in range(data_length):
+            prediction = y_pred[i]
+
+            if prediction in y_true[i]:
+                accuracy_list.append(1)
+
+            else:
+                accuracy_list.append(0)
+
+        ones = accuracy_list.count(1)
+        zeros = accuracy_list.count(0)
+        accuracy = ones / (ones + zeros)
+
+        return accuracy
+    
     def predict(self, text):
         tokens = self.__tokenizer.encode_plus(
             text,
             **self.__tokenizer_args
-        )
+        ).to(0)
 
         input_dict = {
             'input_ids': tokens['input_ids'].long(),
@@ -49,6 +84,22 @@ class TextClassificationModel:
 
         return prediction
     
+    def predict_batch(self, data):
+        pipe = TextClassificationPipeline(
+            model=self.__model,
+            tokenizer=self.__tokenizer,
+            top_k=None,
+            device=0,
+            max_length=512,
+            truncation=True
+        )
+
+        predictions = pipe(data.tolist())
+        y_pred = self.__parse_predictions(predictions)
+        y_pred += 1
+
+        return y_pred
+
     def predict_long_text(self, text):
         window_size = 510
         cls_token = [101]
@@ -101,9 +152,6 @@ class TextClassificationModel:
 
         return prediction
 
-
-
-    
     def __parse_predictions(self, predictions):
         y_pred = np.zeros(len(predictions))
 

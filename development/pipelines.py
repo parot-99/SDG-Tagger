@@ -1,5 +1,5 @@
 import pandas as pd
-from .utils import parse_label
+from .utils import parse_sdg_label
 
 def full_pipe(tagger_model, ner_model, sentiment_model=None, texts=[]):
     full_pipe_frame = pd.DataFrame(columns=[
@@ -11,7 +11,7 @@ def full_pipe(tagger_model, ner_model, sentiment_model=None, texts=[]):
 
     for i, text in enumerate(texts):
         sdg = tagger_model.predict(text)
-        sdg_label = parse_label(sdg)
+        sdg_label = parse_sdg_label(sdg)
         entities = ner_model.get_entities(text)
 
         full_pipe_frame.loc[i] = [

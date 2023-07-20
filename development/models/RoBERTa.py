@@ -1,9 +1,9 @@
 from transformers import RobertaForSequenceClassification
 from transformers import RobertaTokenizerFast
-from .TextClassificationModel import TextClassificationModel
+from .TextClassifier import TextClassifier
 
 
-class RoBERTa(TextClassificationModel):
+class RoBERTa(TextClassifier):
     def __init__(self, path='roberta-base'):      
         self.__model = RobertaForSequenceClassification.from_pretrained(
             path, num_labels=16

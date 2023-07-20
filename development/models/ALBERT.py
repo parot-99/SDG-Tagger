@@ -1,10 +1,10 @@
-from .TextClassificationModel import TextClassificationModel
+from .TextClassifier import TextClassifier
 from transformers import (
     AlbertTokenizerFast,
     AlbertForSequenceClassification
 )
 
-class ALBERT(TextClassificationModel):
+class ALBERT(TextClassifier):
     def __init__(self, path='albert-base-v2'):
         self.__model = AlbertForSequenceClassification.from_pretrained(
             path, num_labels=16

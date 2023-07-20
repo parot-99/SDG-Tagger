@@ -1,4 +1,4 @@
-def parse_label(sdg_label):
+def parse_sdg_label(sdg_label):
     if sdg_label < 0 or sdg_label > 15:
         raise Exception('No such SDG\n')
 
@@ -22,3 +22,15 @@ def parse_label(sdg_label):
     }
 
     return names[sdg_label]
+
+def prase_sentiment_label(sentiment_label):
+    if sentiment_label < 0 or sentiment_label > 2:
+        raise Exception('No such sentiment\n')
+    
+    sentiments = {
+        0: 'Positive',
+        1: 'Negative',
+        2: 'Neutral'
+    }
+
+    return sentiments[sentiment_label]

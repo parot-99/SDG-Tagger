@@ -1,6 +1,6 @@
 import evaluate
 from transformers import Trainer, TrainingArguments
-from development.datasets.osdg_dataset import OsdgDataset
+from development.datasets.OsdgDataset import OsdgDataset
 from numpy import argmax
 
 

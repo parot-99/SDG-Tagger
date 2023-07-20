@@ -1,5 +1,7 @@
 from pandas import read_excel
 from numpy import int64
+from ast import literal_eval
+
 
 def load_uclmodules_data(path, only_labled=True):
     data = read_excel(path, sheet_name='Data')
@@ -21,15 +23,24 @@ def load_uclmodules_data(path, only_labled=True):
     if not only_labled:
         return data
     
+    def to_labels(x):
+        sdgs_list = []
+        
+        for sdg in literal_eval(x['final_sdg_labels']):
+            label = sdg.split('_')[1]
+            sdgs_list.append(int(label))
+
+        return sdgs_list
+
     data = data[data.astype(str)['final_sdg_labels'] != '[]']
     data['final_sdg_labels'] = data.apply(
-        lambda x: x['final_sdg_labels'].split('_')[1].split('\'')[0],
+        lambda x: to_labels(x),
         axis=1
     )
     data = [
         # data['description'].values,
         data['full_text'].values,
-        data['final_sdg_labels'].values.astype(int64)
+        data['final_sdg_labels'].values
     ]
 
     return data

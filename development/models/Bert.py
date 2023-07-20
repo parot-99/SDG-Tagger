@@ -1,10 +1,10 @@
-from .TextClassificationModel import TextClassificationModel
+from .TextClassifier import TextClassifier
 from transformers import (
     BertTokenizerFast,
     BertForSequenceClassification
 )
 
-class Bert(TextClassificationModel):
+class Bert(TextClassifier):
     def __init__(self, path='bert-base-uncased'):
         self.__model = BertForSequenceClassification.from_pretrained(
             path,
