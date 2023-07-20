@@ -1,6 +1,7 @@
 import evaluate
 from transformers import Trainer, TrainingArguments
 from development.datasets.OsdgDataset import OsdgDataset
+from development.datasets.RelxDataset import RelxDataset
 from numpy import argmax
 
 
@@ -37,6 +38,39 @@ def fine_tune_transformer(model, tokenizer, tokenizer_args, data, dev_config):
         train_dataset=train_dataset,
         eval_dataset=valid_dataset,
         compute_metrics=compute_accuracy
+    )
+
+    result = trainer.train()
+    trainer.save_model(output_dir=dev_config['training_args']['output_dir'])
+
+    return result
+
+def fine_tune_transformer_2(model, tokenizer, tokenizer_args, data, dev_config):
+    train_encodings = tokenizer(
+        data['train'][0].tolist(),
+        **tokenizer_args
+    )
+    valid_encodings = tokenizer(
+        data['valid'][0].tolist(),
+        padding=True,
+        truncation=True
+    )
+    train_dataset = RelxDataset(
+        train_encodings, 
+        data['train'][1],
+    )
+    valid_dataset = RelxDataset(
+        valid_encodings,
+        data['valid'][1],
+    )
+
+    trainer_args = TrainingArguments(**dev_config['training_args'])
+    trainer = Trainer(
+        model=model,
+        args=trainer_args,
+        train_dataset=train_dataset,
+        eval_dataset=valid_dataset,
+        # compute_metrics=compute_accuracy
     )
 
     result = trainer.train()

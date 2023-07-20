@@ -43,6 +43,8 @@ class RelxScraper:
             if verbose == 1:
                 logging.info(f'Scraping page number {page_num + 1} finished')
 
+        self.__add_sdg_columns()
+
     def __get_all_data(self, article):
         title = article.find('h2', class_='field-content')
         title = title.find('a').text
@@ -95,6 +97,28 @@ class RelxScraper:
 
         return full_abstract
     
+    def __add_sdg_columns(self):
+        for i in range(1, 17):
+            self.__data[f'sdg_{i}'] = 0.0
+
+        def in_sdgs(sdgs, i):
+            sdgs_list = []
+                
+            for sdg in sdgs['sdgs'].split(';'):
+                label = sdg.strip().split(' ')[1].split(':')[0]
+                sdgs_list.append(int(label))
+
+            if i in sdgs_list:
+                return 1.0
+ 
+            return 0.0
+
+        for i in range(1, 17):
+            self.__data[f'sdg_{i}'] = self.__data.apply(
+            lambda x: in_sdgs(x, i),
+            axis=1
+        )
+
     def save_as_csv(self, path):
         self.__data.to_csv(path, sep=',', index=False, encoding='utf-8')
 

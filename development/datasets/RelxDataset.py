@@ -13,14 +13,14 @@ class RelxDataset(Dataset):
 
     def __getitem__(self, idx):
         sample = {
-            key: val[idx].clone().detach() for key, val in self.__encodings.items()
+            key: tensor(val[idx]) for key, val in self.__encodings.items()
         }
         sample['labels'] = tensor(self.__labels[idx])
 
         return sample
 
-def load_relx_data(data_path, training=False, filter_agreement=False):
-    data = read_csv(data_path, delimiter=r'\t', engine='python')
+def load_relx_data(data_path, training=False):
+    data = read_csv(data_path)
     train_ratio = 0.70
     test_ratio = 0.15
     valid_ratio = 0.15
@@ -29,13 +29,12 @@ def load_relx_data(data_path, training=False, filter_agreement=False):
         return data
 
     texts = data['full_abstract'].values
-    sdgs = data['sdgs'].values
+    sdgs = data[[f'sdg_{i}' for i in range(1, 17)]].values
 
     train_data, test_data, train_labels, test_labels = train_test_split(
         texts,
         sdgs,
         test_size=1 - train_ratio,
-        stratify=sdgs,
         random_state=47,
         shuffle=True
     )
@@ -44,7 +43,6 @@ def load_relx_data(data_path, training=False, filter_agreement=False):
         test_data,
         test_labels,
         test_size=test_ratio/(test_ratio + valid_ratio),
-        stratify=test_labels,
         random_state=47
     )
 
@@ -55,6 +53,3 @@ def load_relx_data(data_path, training=False, filter_agreement=False):
     }
 
     return data
-
-
-
