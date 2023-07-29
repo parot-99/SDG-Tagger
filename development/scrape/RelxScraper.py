@@ -22,7 +22,6 @@ class RelxScraper:
 
             if verbose == 1:
                 logging.info(f'Scraping page number {page_num + 1}')
-                print(f'Scraping page number {page_num + 1}')
 
             if page_num != 0:
                 page = requests.get(self.__url + f'?page={page_num}')

@@ -1,6 +1,8 @@
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from pandas import read_csv
 from sklearn.model_selection import train_test_split
+from skmultilearn.model_selection import iterative_train_test_split
+
 from torch import tensor
 
 class RelxDataset(Dataset):
@@ -13,7 +15,8 @@ class RelxDataset(Dataset):
 
     def __getitem__(self, idx):
         sample = {
-            key: tensor(val[idx]) for key, val in self.__encodings.items()
+            # key: tensor(val[idx]) for key, val in self.__encodings.items()
+            key: val[idx].clone().detach() for key, val in self.__encodings.items()
         }
         sample['labels'] = tensor(self.__labels[idx])
 

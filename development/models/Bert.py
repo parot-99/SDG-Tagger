@@ -10,7 +10,10 @@ class Bert(TextClassifier):
             path,
             num_labels=16,
             output_attentions=False, 
-            output_hidden_states=True
+            output_hidden_states=True,
+            attention_probs_dropout_prob=1e-1,
+            hidden_dropout_prob=3e-1,
+            classifier_dropout=None
         )
         self.__tokenizer  = BertTokenizerFast.from_pretrained(
             'bert-base-uncased', do_lower_case=True, padding_side='right'

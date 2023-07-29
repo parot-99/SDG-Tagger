@@ -1,9 +1,9 @@
 from pandas import read_excel
-from numpy import int64
+from numpy import int64, where
 from ast import literal_eval
 
 
-def load_uclmodules_data(path, only_labled=True):
+def load_uclmodules_data(path, only_labled=True, evaluation=False):
     data = read_excel(path, sheet_name='Data')
     data = data.drop([
         'Unnamed: 0', 'link', 'heading', 'updated',   'Faculty',
@@ -15,12 +15,23 @@ def load_uclmodules_data(path, only_labled=True):
         'Module leader2', 'Who to contact for more information2',
         'Teaching location', 'Delivery includes', 'Teaching location2',
         'Delivery includes2', 'Code', 'text_len', 'all_keywords',
-        'sdg_keywords', 'SDG_1', 'SDG_2', 'SDG_3', 'SDG_4', 'SDG_5', 'SDG_6', 
-        'SDG_7', 'SDG_8', 'SDG_9', 'SDG_10', 'SDG_11','SDG_12', 
-        'SDG_13', 'SDG_14', 'SDG_15', 'SDG_16', 'SDG_17', 
+        'sdg_keywords', 
     ], axis=1)
 
     if not only_labled:
+        return data
+    
+    data = data[data.astype(str)['final_sdg_labels'] != '[]']
+
+    if evaluation:
+        sdgs = data[[f'SDG_{i}' for i in range(1, 17)]].values
+        sdgs = where(sdgs == 'Yes', 1, 0)
+        data = [
+            # data['description'].values,
+            data['full_text'].values,
+            sdgs
+        ]
+
         return data
     
     def to_labels(x):
@@ -28,11 +39,10 @@ def load_uclmodules_data(path, only_labled=True):
         
         for sdg in literal_eval(x['final_sdg_labels']):
             label = sdg.split('_')[1]
-            sdgs_list.append(int(label))
+            sdgs_list.append(int(label) - 1)
 
         return sdgs_list
 
-    data = data[data.astype(str)['final_sdg_labels'] != '[]']
     data['final_sdg_labels'] = data.apply(
         lambda x: to_labels(x),
         axis=1

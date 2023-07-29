@@ -151,6 +151,9 @@ class TextClassifier:
         prediction = prediction.argmax().item()
 
         return prediction
+    
+    def to_gpu(self, gpu_id=0):
+        self.__model == self.__model.to(gpu_id)
 
     def __parse_predictions(self, predictions):
         y_pred = np.zeros(len(predictions))
