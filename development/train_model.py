@@ -1,7 +1,6 @@
 import evaluate
 from transformers import Trainer, TrainingArguments
-from development.datasets.OsdgDataset import OsdgDataset
-from development.datasets.RelxDataset import RelxDataset
+from development.datasets.TextDataset import TextDataset
 from numpy import argmax
 
 def compute_accuracy(eval_pred):
@@ -11,16 +10,7 @@ def compute_accuracy(eval_pred):
 
     return metric.compute(predictions=predictions, references=labels)
 
-def fine_tune_transformer(
-    model,
-    tokenizer,
-    tokenizer_args,
-    data,
-    dataset,
-    dev_config
-):
-    
-    dataset = OsdgDataset if dataset == 'osdg' else RelxDataset
+def fine_tune_transformer(model, tokenizer, tokenizer_args, data, dev_config):
     train_encodings = tokenizer(
         data['train'][0].tolist(),
         **tokenizer_args
@@ -29,11 +19,11 @@ def fine_tune_transformer(
         data['valid'][0].tolist(),
         **tokenizer_args
     )
-    train_dataset = dataset(
+    train_dataset = TextDataset(
         train_encodings, 
         data['train'][1],
     )
-    valid_dataset = dataset(
+    valid_dataset = TextDataset(
         valid_encodings,
         data['valid'][1],
     )

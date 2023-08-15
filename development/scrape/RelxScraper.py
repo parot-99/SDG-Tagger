@@ -50,11 +50,7 @@ class RelxScraper:
         link = article.find('h2', class_='field-content')
         link = link.find('a')['href']
         abstract = article.find('div', class_='views-field-body')
-
-        if abstract is None:
-            return None
-        
-        abstract = abstract.find('div').text
+        abstract = abstract.find('div').text if abstract is not None else ''
         sdgs = article.find('div', class_='sidebar-content')
         sdgs = sdgs.find('div', class_='field-content')
 
@@ -114,9 +110,9 @@ class RelxScraper:
 
         for i in range(1, 17):
             self.__data[f'sdg_{i}'] = self.__data.apply(
-            lambda x: in_sdgs(x, i),
-            axis=1
-        )
+                lambda x: in_sdgs(x, i),
+                axis=1
+            )
 
     def save_as_csv(self, path):
         self.__data.to_csv(path, sep=',', index=False, encoding='utf-8')

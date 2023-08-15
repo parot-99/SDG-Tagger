@@ -18,10 +18,8 @@ def load_uclmodules_data(path, only_labled=True, evaluation=False):
         'sdg_keywords', 
     ], axis=1)
 
-    if not only_labled:
-        return data
-    
-    data = data[data.astype(str)['final_sdg_labels'] != '[]']
+    if only_labled:
+        data = data[data.astype(str)['final_sdg_labels'] != '[]']
 
     if evaluation:
         sdgs = data[[f'SDG_{i}' for i in range(1, 17)]].values

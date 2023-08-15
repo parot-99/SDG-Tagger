@@ -12,27 +12,22 @@ class MultilabelTextClassifier:
         self.__tokenizer  = tokenizer
         self.__tokenizer_args = tokenizer_args
 
-    def evaluate(self, data):
+    def evaluate(self, data, threshold=0.6):
         predictions = self.predict_batch(data[0])
-        y_pred = np.where(predictions > 0.5, 1, 0)
+        y_pred = np.where(predictions > threshold, 1, 0)
         y_true = data[1]
         evaluation = classification_report(y_true, y_pred, zero_division=1)
-        # evaluation = classification_report(y_true, y_pred, output_dict=True)
-        # evaluation = DataFrame(evaluation).T
 
         return evaluation
     
-    def evaluate_single_label(self, data, mode=['exact_match', 'included']):
-        pipe = TextClassificationPipeline(
-            model=self.__model,
-            tokenizer=self.__tokenizer,
-            top_k=None,
-            device=0,
-            max_length=512,
-            truncation=True
-        )
+    def evaluate_single_label(
+        self,
+        data,
+        threshold=0.6,
+        mode=['exact_match', 'included']
+    ):
+        predictions = self.cls_pipeline(data[0])
         y_true = data[1]
-        predictions = pipe(data[0].tolist())
 
         if mode == 'exact_match':
             y_pred = self.parse_predictions(predictions, top_k=1)
@@ -44,7 +39,7 @@ class MultilabelTextClassifier:
             y_pred = self.parse_predictions(
                 predictions,
                 top_k=16,
-                threshold=0.6
+                threshold=threshold
             )
             data_length = len(predictions)
             accuracy_list = []
@@ -62,16 +57,20 @@ class MultilabelTextClassifier:
 
             return accuracy
         
-    def predict(self, text):
-        pipe = TextClassificationPipeline(
-            model=self.__model,
-            tokenizer=self.__tokenizer,
-            top_k=None,
-            device=0,
-            max_length=512,
-            truncation=True
-        )
-        prediction = pipe(text)
+    def predict(self, text, device=0):
+        tokens = self.__tokenizer.encode_plus(
+            text,
+            **self.__tokenizer_args
+        ).to(device)
+
+        input_dict = {
+            'input_ids': tokens['input_ids'].long(),
+            'attention_mask': tokens['attention_mask'].int()
+        }
+
+        with inference_mode():
+            prediction = self.__model(**input_dict)
+            prediction = sigmoid(prediction[0])
 
         return prediction
 
@@ -79,27 +78,33 @@ class MultilabelTextClassifier:
         preidctions = np.zeros(shape=(len(texts), 16))
 
         for i, text in enumerate(texts):
-            tokens = self.__tokenizer.encode_plus(
-                text,
-                **self.__tokenizer_args
-            ).to(0)
-
-            input_dict = {
-                'input_ids': tokens['input_ids'].long(),
-                'attention_mask': tokens['attention_mask'].int()
-            }
-
-            with inference_mode():
-                prediction = self.__model(**input_dict)
-                prediction = sigmoid(prediction[0])
-                preidctions[i] = prediction.cpu()
+            prediction = self.predict(text)
+            preidctions[i] = prediction.cpu()
 
         return preidctions
+    
+    def cls_pipeline(self, data, device=0):
+        pipe = TextClassificationPipeline(
+            model=self.__model,
+            tokenizer=self.__tokenizer,
+            top_k=None,
+            device=device,
+            max_length=512,
+            truncation=True
+        )
+
+        if isinstance(data, str):
+            prediction = pipe(data)
+
+        else:
+            prediction = pipe(data.tolist())
+
+        return prediction
     
     def to_gpu(self, gpu_id=0):
         self.__model == self.__model.to(gpu_id)
     
-    def parse_predictions(self, predictions, top_k=1, threshold=0.0):
+    def parse_predictions(self, predictions, top_k=1, threshold=0.5):
         if top_k == 1:
             y_pred = np.zeros(len(predictions))
 
