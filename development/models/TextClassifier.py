@@ -151,6 +151,19 @@ class TextClassifier:
         prediction = prediction.argmax().item()
 
         return prediction
+
+    def predict_proba(self, text):
+        model_inputs = self.__tokenizer(
+            text,
+            return_tensors='pt',
+            padding=True,
+            truncation=True
+        )
+        outputs = self.__model(**model_inputs)
+        logits = outputs.logits
+        probas = softmax(logits, dim=-1).detach().numpy()
+
+        return probas
     
     def to_gpu(self, gpu_id=0):
         self.__model == self.__model.to(gpu_id)

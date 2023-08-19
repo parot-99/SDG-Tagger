@@ -23,7 +23,7 @@ def parse_sdg_id(sdg_id):
 
     return names[sdg_id]
 
-def parse_sdg_label(sdg_label):
+def parse_sdg_label(sdg_label, training=False):
     names = {
         'No Poverty': 0,
         'Zero Hunger': 1,
@@ -46,7 +46,8 @@ def parse_sdg_label(sdg_label):
     # if sdg_label not in list(names.keys()):
     #     raise Exception('No such SDG\n')
     
-    sdg_id = names[sdg_label]
+    if not training:
+        sdg_id = names[sdg_label] if training else names[sdg_label] + 1
 
     return sdg_id
 

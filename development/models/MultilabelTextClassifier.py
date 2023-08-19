@@ -83,7 +83,7 @@ class MultilabelTextClassifier:
 
         return preidctions
     
-    def cls_pipeline(self, data, device=0):
+    def cls_pipeline(self, data, device=0, parse=False, top_k=1, threshold=0.6):
         pipe = TextClassificationPipeline(
             model=self.__model,
             tokenizer=self.__tokenizer,
@@ -94,17 +94,21 @@ class MultilabelTextClassifier:
         )
 
         if isinstance(data, str):
-            prediction = pipe(data)
+            predictions = pipe(data)
 
         else:
-            prediction = pipe(data.tolist())
+            predictions = pipe(data.tolist())
 
-        return prediction
+
+        if parse:
+            predictions = self.parse_predictions(predictions, top_k, threshold)
+
+        return predictions
     
     def to_gpu(self, gpu_id=0):
         self.__model == self.__model.to(gpu_id)
     
-    def parse_predictions(self, predictions, top_k=1, threshold=0.5):
+    def parse_predictions(self, predictions, top_k=1, threshold=0.6):
         if top_k == 1:
             y_pred = np.zeros(len(predictions))
 

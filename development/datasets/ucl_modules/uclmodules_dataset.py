@@ -1,5 +1,5 @@
 from pandas import read_excel
-from numpy import int64, where
+from numpy import where
 from ast import literal_eval
 
 

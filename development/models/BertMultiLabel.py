@@ -33,7 +33,7 @@ class BertMultiLabel(MultilabelTextClassifier):
             id2label=id2label,
             label2id=label2id,
             num_labels=16,
-            output_attentions=False, 
+            output_attentions=True, 
             output_hidden_states=True,
             attention_probs_dropout_prob=3e-1,
             hidden_dropout_prob=3e-1,
