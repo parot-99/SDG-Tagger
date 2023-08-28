@@ -46,8 +46,8 @@ def parse_sdg_label(sdg_label, training=False):
     # if sdg_label not in list(names.keys()):
     #     raise Exception('No such SDG\n')
     
-    if not training:
-        sdg_id = names[sdg_label] if training else names[sdg_label] + 1
+
+    sdg_id = names[sdg_label] if training else names[sdg_label] + 1
 
     return sdg_id
 

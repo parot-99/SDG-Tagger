@@ -23,17 +23,24 @@ class Lime(BaseInterpreter):
             'Peace, Justice, and Strong Institutions'
         ]
 
-    def interpret(self, input_text, transformer, show=True):
+    def interpret(self, input_text, transformer, show=True, device=0):
         explainer = LimeTextExplainer(class_names=self.__class_names)
         explanation = explainer.explain_instance(
             input_text,
             transformer.predict_proba,
-            num_samples=250,
-            num_features=30
+            labels=[i for i in range(0,16)],
+            num_samples=100,
+            num_features=10
         )
 
+        if device == 0:
+            transformer.to_gpu()
+
+        prediction = transformer.predict(input_text)
+
         if show:
-            explanation.show_in_notebook()
+            explanation.show_in_notebook(labels=[prediction])
+
 
     def print_parameters(self):
         parameters = f'''

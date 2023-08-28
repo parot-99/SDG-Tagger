@@ -23,6 +23,7 @@ def load_osdg_data(data_path, training=False, filter_agreement=False):
         test_size=1 - train_ratio,
         stratify=sdgs,
         random_state=47,
+        # random_state=47,
         shuffle=True
     )
 

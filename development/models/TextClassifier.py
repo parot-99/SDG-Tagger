@@ -1,8 +1,9 @@
 import numpy as np
 from transformers import TextClassificationPipeline
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, f1_score
 from torch import Tensor, cat, stack
 from torch.nn.functional import softmax
+from ..utils import parse_sdg_label
 
 class TextClassifier:
     def __init__(self, model, tokenizer, tokenizer_args):
@@ -76,10 +77,10 @@ class TextClassifier:
             'input_ids': tokens['input_ids'].long(),
             'attention_mask': tokens['attention_mask'].int()
         }
-
+        self.to_gpu()
         prediction = self.__model(**input_dict)
         prediction = softmax(prediction[0], dim=-1)
-        prediction.mean(dim=0)
+        # prediction.mean(dim=0)
         prediction = prediction.argmax().item()
 
         return prediction
@@ -158,10 +159,11 @@ class TextClassifier:
             return_tensors='pt',
             padding=True,
             truncation=True
-        )
+        ).to(0)
+        self.to_gpu()
         outputs = self.__model(**model_inputs)
         logits = outputs.logits
-        probas = softmax(logits, dim=-1).detach().numpy()
+        probas = softmax(logits, dim=-1).detach().cpu().numpy()
 
         return probas
     
@@ -169,12 +171,10 @@ class TextClassifier:
         self.__model == self.__model.to(gpu_id)
 
     def __parse_predictions(self, predictions):
-        y_pred = np.zeros(len(predictions))
+        y_pred = np.zeros(len(predictions), dtype=np.int64)
 
         for i, pred in enumerate(predictions):
-            y_pred[i] = int(pred[0]['label'].split('_')[1])
-
-        y_pred.astype(np.int64)
+            y_pred[i] = parse_sdg_label(pred[0]['label'], training=True)
 
         return y_pred
     
