@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 
 class Visualizer:
     def __init__(self, data):
@@ -9,10 +10,10 @@ class Visualizer:
             'green',
             'red',
             'purple',
+            'slategray',
             'brown',
             'pink',
             'gray',
-            'olive',
             'cyan',
             'olive',
             'yellow',
@@ -20,6 +21,20 @@ class Visualizer:
             'slateblue',
             'darkgreen',
             'tan',
+        ]
+
+        self.__faculty_colors = [
+            'blue',
+            'orange',
+            'green',
+            'red',
+            'slategray',
+            'purple',
+            'brown',
+            'pink',
+            'gray',
+            'cyan',
+            'olive'
         ]
 
     def print_info(self):
@@ -98,3 +113,38 @@ class Visualizer:
         )
         plt.plot()
 
+
+    def sdg_count_faculty(self, sdg_id=1):
+        data = self.__data
+        faculties = data['Faculty'].unique()
+        faculties = faculties[~pd.isnull(faculties)]
+        sdg_counts = []
+
+        for facultie in faculties:
+            count = data[data['Faculty'] == facultie][f'SDG_{sdg_id}'].sum()
+            sdg_counts.append(count)
+
+        fig, ax = plt.subplots(figsize=(5, 6))
+        ax.set_title('Number of SDGs-related taught modules addressing each SDG by faculty')
+        ax.set_xlabel(f'Number of Modules Addressing SDG {sdg_id}')
+        step = int(max(sdg_counts) / len(sdg_counts))
+
+        if step == 0:
+            step = 1
+
+        ax.set_xticks([i for i in range(0, max(sdg_counts), step)])
+        ax.xaxis.grid(
+            True,
+            linestyle='--',
+            which='major',
+            color='grey',
+            alpha=.25
+        )
+        bar_plot = ax.barh(
+            faculties,
+            sdg_counts,
+            align='center',
+            color=self.__faculty_colors
+        )
+
+        plt.show()

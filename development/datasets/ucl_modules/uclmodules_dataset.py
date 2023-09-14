@@ -4,20 +4,22 @@ from ast import literal_eval
 from development.utils import parse_sdg_id
 
 
-def load_uclmodules_data(path, only_labled=True, evaluation=False):
+def load_uclmodules_data(path, only_labled=True, evaluation=False, drop=True):
     data = read_excel(path, sheet_name='Data')
-    data = data.drop([
-        'Unnamed: 0', 'link', 'heading', 'updated',   'Faculty',
-        'Teaching department', 'Credit value', 'Restrictions', 'Timetable',
-        'alternative_credit_options', 'Methods of assessment', 'Mark scheme',
-        'Number of students on module in previous year', 'Module leader',
-        'Who to contact for more information', 'Methods of assessment2',
-        'Mark scheme2', 'Number of students on module in previous year2',
-        'Module leader2', 'Who to contact for more information2',
-        'Teaching location', 'Delivery includes', 'Teaching location2',
-        'Delivery includes2', 'Code', 'text_len', 'all_keywords',
-        'sdg_keywords', 
-    ], axis=1)
+
+    if drop:
+        data = data.drop([
+            'Unnamed: 0', 'link', 'heading', 'updated',   'Faculty',
+            'Teaching department', 'Credit value', 'Restrictions', 'Timetable',
+            'alternative_credit_options', 'Methods of assessment', 'Mark scheme',
+            'Number of students on module in previous year', 'Module leader',
+            'Who to contact for more information', 'Methods of assessment2',
+            'Mark scheme2', 'Number of students on module in previous year2',
+            'Module leader2', 'Who to contact for more information2',
+            'Teaching location', 'Delivery includes', 'Teaching location2',
+            'Delivery includes2', 'Code', 'text_len', 'all_keywords',
+            'sdg_keywords', 
+        ], axis=1)
 
     if only_labled:
         data = data[data.astype(str)['final_sdg_labels'] != '[]']
