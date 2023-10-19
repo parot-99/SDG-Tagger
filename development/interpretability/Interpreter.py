@@ -3,6 +3,26 @@ from .Lime import Lime
 from .Shap import Shap
 
 class Interpreter:
+    """ The Interpreter class provides a collection of interpretation frameworks that are used to provide explainations for the TextClassifiers provided in this work. Each Interpretation framework is provided by its own class that inherets from BaseInterpreter.
+
+    To add a new Interpreter, provide it as class, implement print_interpreter_parameters and interpret methods, and add it to the interpreters list in this class.
+
+    Attributes:
+    -----------
+    interpreter_type: object
+        sets the interpreter to be used
+
+    Methods:
+    --------
+    print_interpreter_names:
+        prints the list of available interpreters
+    print_interpreter_parameters:
+        prints configurable list of parameters for the desired interpreter
+    interpret:
+        provides explainations for the desired model
+    
+    """
+    
     def __init__(self, interpreter_type):
         self.__interpreters = {
             'attention_heatmap': AttentionHeatmap,

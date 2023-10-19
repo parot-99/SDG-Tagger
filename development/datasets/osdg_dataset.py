@@ -3,6 +3,25 @@ from sklearn.model_selection import train_test_split
 
 
 def load_osdg_data(data_path, training=False, filter_agreement=False):
+    """ A function to load the OSDG community datasets.
+
+    Parameters:
+    -----------
+    data_path: str
+        path to the OSDG data
+    training: bool
+        whether to load the whole csv file or load data in training form (3-way split)
+    filter_agreement: bool
+        whether to filter the data using the agreement score in the OSDG data
+
+    Returns:
+    --------
+    if trainin == False
+        Returns a pandas dataframe representing the OSDG data
+    
+    if training == True
+        Returns a dictionary that includes train, validation, and test splits
+    """
     data = read_csv(data_path, delimiter=r'\t', engine='python')
     train_ratio = 0.70
     test_ratio = 0.15
@@ -22,7 +41,7 @@ def load_osdg_data(data_path, training=False, filter_agreement=False):
         sdgs,
         test_size=1 - train_ratio,
         stratify=sdgs,
-        random_state=47,
+        random_state=7,
         # random_state=47,
         shuffle=True
     )
@@ -32,7 +51,7 @@ def load_osdg_data(data_path, training=False, filter_agreement=False):
         test_labels,
         test_size=test_ratio/(test_ratio + valid_ratio),
         stratify=test_labels,
-        random_state=47
+        random_state=7
     )
 
     data = {

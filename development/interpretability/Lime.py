@@ -1,6 +1,7 @@
 from lime.lime_text import LimeTextExplainer
 from .BaseInterpreter import BaseInterpreter
 from torch import softmax
+from torch.cuda import empty_cache
 
 class Lime(BaseInterpreter):
     def __init__(self):
@@ -24,19 +25,17 @@ class Lime(BaseInterpreter):
         ]
 
     def interpret(self, input_text, transformer, show=True, device=0):
+        # empty_cache()
         explainer = LimeTextExplainer(class_names=self.__class_names)
         explanation = explainer.explain_instance(
             input_text,
             transformer.predict_proba,
             labels=[i for i in range(0,16)],
             num_samples=100,
-            num_features=10
+            num_features=25
         )
 
-        if device == 0:
-            transformer.to_gpu()
-
-        prediction = transformer.predict(input_text)
+        prediction = transformer.predict(input_text, device=device)
 
         if show:
             explanation.show_in_notebook(labels=[prediction])

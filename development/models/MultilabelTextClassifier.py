@@ -1,12 +1,45 @@
 import numpy as np
 from transformers import TextClassificationPipeline
 from sklearn.metrics import classification_report
-from torch import Tensor, cat, stack, inference_mode
-from torch.nn.functional import softmax, sigmoid
-from pandas import DataFrame
+from torch import inference_mode
+from torch.nn.functional import sigmoid
 from ..utils import parse_sdg_label
 
 class MultilabelTextClassifier:
+    """ TextClassifier class provides functionalities to the multi-label models provided in the models module. Functionalities include running inference, evaluating the model on a set of data, and parsing the predictions.
+
+    Attributes:
+    -----------
+    model (property): Object
+        A Huggingface model
+    tokenizer (property): Object
+        A Huggingface tokenizer
+    tokenizer_args (property):
+        A dictionary holding the configuration of the tokenizer
+
+    Methods:
+    --------
+    evaluate: 
+        Evaluates a single-label classifier on a set of single-labeled data and returns a classification report
+    evalaute_single_label:
+        Evaluates a multi-label classifier on a set of single-labeled data and returns an accuracy score
+    predict:
+        Runs inference on single data point
+    predict_batch:
+        Runs inference on a batch of data
+    cls_pipeline:
+        Runs inference using Huggingface's TextClassificationPipeline
+    predict_longtext:
+        Runs inference on a single data point that exccedes a model's max token length using the window method
+    predict_proba:
+        Runs inference on a single data point or a batch of data and returns the probabilities of the predictions, used for interpretability packges (Lime)
+    to_gpu:
+        Loads the model to a GPU using the GPU ID
+    parse_predictions:
+        Parses predictions ran using Huggingface's TextClassificationPipeling
+
+    """
+     
     def __init__(self, model, tokenizer, tokenizer_args):
         self.__model = model
         self.__tokenizer  = tokenizer
@@ -67,6 +100,7 @@ class MultilabelTextClassifier:
             'input_ids': tokens['input_ids'].long(),
             'attention_mask': tokens['attention_mask'].int()
         }
+        self.__model.to(device)
 
         with inference_mode():
             prediction = self.__model(**input_dict)
@@ -82,6 +116,11 @@ class MultilabelTextClassifier:
             preidctions[i] = prediction.cpu()
 
         return preidctions
+
+    def predict_longtext(self):
+        """ Implement the function
+        """
+        pass
     
     def cls_pipeline(self, data, device=0, parse=False, top_k=1, threshold=0.6):
         pipe = TextClassificationPipeline(

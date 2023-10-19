@@ -5,6 +5,18 @@ from transformers import (
 )
 
 class BertMultiLabel(MultilabelTextClassifier):
+    """ A class to load Bert model for multi-label classification using the HuggingFace API, the class inherits from the TextClassifier class which includes the model's functionalities such as running inference, see TextClassifier for more information.
+
+    The configuration of the model, such as dorputs, can be set from this class.
+
+    The configuration of the tokenizer, such as padding, can be set from this class.
+
+    Attributes:
+    -----------
+    path: str
+        Model path, the default path loads the pre-trained model from the HuggingFace Model-Hub
+    
+    """
     def __init__(self, path='bert-base-uncased'):
         names = [
             'No Poverty',

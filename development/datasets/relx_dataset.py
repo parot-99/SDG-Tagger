@@ -4,8 +4,26 @@ from skmultilearn.model_selection import iterative_train_test_split
 
 
 def load_relx_data(data_path, training=False):
+    """ A function to load the Relx data
+
+    Parameters:
+    -----------
+    data_path: str
+        Path to Relx data
+    training: bool
+        whether to load the whole csv file or load data in training form (3-way split)
+    
+    Returns:
+    --------
+    if trainin == False
+        Returns a list containing all the text data and their relevant SDGs
+    
+    if training == True
+        Returns a dictionary that includes train, validation, and test splits.
+
+    """
     data = read_csv(data_path)
-    train_ratio = 0.75
+    train_ratio = 0.70
     test_ratio = 0.15
     valid_ratio = 0.15
 

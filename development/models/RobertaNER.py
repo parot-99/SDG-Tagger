@@ -1,6 +1,8 @@
 import spacy
 
 class RobertaNER:
+    """
+    """
     def __init__(self) -> None:
         self.__model = spacy.load('en_core_web_trf')
 
