@@ -4,6 +4,23 @@ import logging
 from bs4 import BeautifulSoup
 
 class RelxScraper:
+    """ A class to scrape SDGs articles from the Relx Datacenter website.
+
+    Attributes:
+    -----------
+    __data (property): Pandas Dataframe
+    __base_url: str
+    __url: str
+    __num_pages: int
+
+    Methods:
+    --------
+    scrape_data:
+    __get_all_data:
+    __get_full_abstract:
+    __add_sdg_columns:
+    save_as_csv:
+    """
     def __init__(self):
         self.__data = pd.DataFrame(columns=[
             'title',

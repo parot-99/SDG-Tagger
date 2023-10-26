@@ -18,7 +18,7 @@ data/video_decription_data.csv
 data/ucl_modules_data.xlsx
 data/osdg_data_old.csv
 data/osdg_data.csv
-data/relx_data.csv
+# data/relx_data.csv
 data/UCL Modules Data.xlsx
 
 # models
