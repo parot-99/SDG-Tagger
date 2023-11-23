@@ -7,8 +7,7 @@ Assets/
 dissertation_notes.txt
 development/training_output/
 development/weights/
-production/
-production_main.ipynb
+production/weights
 practice.ipynb
 training_log.csv
 Documenting Checklist.txt

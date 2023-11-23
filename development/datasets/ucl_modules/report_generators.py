@@ -2,6 +2,17 @@ from pandas import read_excel, ExcelWriter, DataFrame
 
 
 def generate_reports(data_path, append=False, report_names=[]):
+    """
+    Parameters:
+    -----------
+    data_path: String
+    append: Bool
+    report_names: List
+
+    Returns:
+    --------
+    reports: List
+    """
     reports = []
 
     report_generators = [
@@ -20,12 +31,34 @@ def generate_reports(data_path, append=False, report_names=[]):
     return reports
 
 def append_report(data_path, report, report_name):
+    """
+    Parameters:
+    -----------
+    data_path: String
+    report: Pandas Dataframe
+    report_name: String
+
+    Returns:
+    --------
+
+    """
     with ExcelWriter(data_path, mode='a') as writer:
         report.to_excel(writer, sheet_name=report_name, index=False)
 
 # report generators
 
 def report_faculty_sdgs(data_path, append=False, report_name='Report Name'):
+    """
+    Parameters:
+    -----------
+    data_path: String
+    append: Bool
+    report_name: String
+
+    Returns:
+    --------
+    report: Pandas Dataframe
+    """
     data = read_excel(data_path, sheet_name='Data')
     report = DataFrame(columns=[
         'Faculty',
@@ -62,6 +95,17 @@ def report_faculty_sdgs(data_path, append=False, report_name='Report Name'):
 
 
 def report_faculty_total_sdgs(data_path, append=False, report_name='Report'):
+    """
+    Parameters:
+    -----------
+    data_path: String
+    append: Bool
+    report_name: String
+
+    Returns:
+    --------
+    report: Pandas Dataframe
+    """
     data = read_excel(data_path, sheet_name='Data')
     report = DataFrame(columns=[
         'Faculty',
